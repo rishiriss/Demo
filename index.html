@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Recommendation System</title>
+    <script>
+        async function getRecommendations() {
+            const productId = document.getElementById('product_id').value;
+            const response = await fetch('/recommend', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ product_id: productId })
+            });
+            
+            if (response.ok) {
+                const recommendations = await response.json();
+                let output = "<h3>Recommended Products:</h3><ul>";
+                recommendations.forEach(product => {
+                    output += `<li>${product['Product Name']} (Rating: ${product['Avg. Rating']})</li>`;
+                });
+                output += "</ul>";
+                document.getElementById('recommendations').innerHTML = output;
+            } else {
+                document.getElementById('recommendations').innerHTML = "Product ID not found.";
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Product Recommendation System</h1>
+    <label for="product_id">Enter Product ID:</label>
+    <input type="number" id="product_id" name="product_id">
+    <button onclick="getRecommendations()">Get Recommendations</button>
+
+    <div id="recommendations"></div>
+</body>
+</html>
